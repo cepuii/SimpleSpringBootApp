@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -18,8 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class BookController {
   
-  private BookService service;
-  private BookToDtoMapper mapper;
+  private final BookService service;
+  private final BookToDtoMapper dtoMapper;
   
   @GetMapping("/{id}")
   public Book getBookById(@PathVariable long id) {
@@ -27,13 +28,16 @@ public class BookController {
   }
   
   @GetMapping
-  public List<Book> getAllBooks() {
+  public List<Book> getAllBooks(@RequestParam(required = false) String author) {
+    if (author != null) {
+      return service.getByAuthor(author);
+    }
     return service.getAllBooks();
   }
   
   @PostMapping
   public void addBook(@RequestBody BookRequest bookRequest) {
-    service.addBook(mapper.bookRequestToBook(bookRequest));
+    service.addBook(dtoMapper.bookRequestToBook(bookRequest));
   }
   
 }

@@ -10,4 +10,6 @@ public interface BookService {
   List<Book> getAllBooks();
   
   void addBook(Book book);
+  
+  List<Book> getByAuthor(String author);
 }
